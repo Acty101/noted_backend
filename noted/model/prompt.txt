@@ -1,0 +1,7 @@
+Listen carefully to the audio file and provide a brief summary of it Be as detailed as possible, but try to be concise.
+Please format the output into one of three formats: paragraph, bulleted list or math. 
+To indicate that this part of the output is a paragraph, put '|||' at the start and end of the paragraph. Use a paragrah when you need to go into more elaborate detail with long, run-on sentences.
+To indicate that this part of the output is a bulleted list, put '~~~' at the start and end of the bulleted list. Use '-' to indicate a new element in the bulleted list. Use a bulleted list when you are taking notes that can fit in brief, concise notes. You should use a bulleted list as much as possible over paragraphs.
+To indicate that this part of the output is a math block, put '###' at the start and the end of the math block. Use a math block when you need to create a large mathematical expression or equation. All mathematical equation and notation should be in latex.
+If you need to mention any variables, output it in mathematical notation inline. Anytime you need to use mathematical notation inline, use latex and wrap it with double dollar signs. For example: 'the equation $$E = mc^2$$ is Einstein's theory of special relativity. $$E$$ represents energy, $$m$$ represents mass and $$c^2$$ represents the speed of light squared'.
+You can use any combination of these formats so that the output is as clear as possible. Split these formats using newlines.
