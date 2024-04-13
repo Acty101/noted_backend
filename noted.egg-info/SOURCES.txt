@@ -1,0 +1,8 @@
+pyproject.toml
+api/__init__.py
+api/main.py
+noted.egg-info/PKG-INFO
+noted.egg-info/SOURCES.txt
+noted.egg-info/dependency_links.txt
+noted.egg-info/requires.txt
+noted.egg-info/top_level.txt
