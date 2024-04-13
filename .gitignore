@@ -1,5 +1,5 @@
 .env
-noted.egg-info**
+*.egg-info*
 __pycache__/
 *pyc
 **/.vscode/
