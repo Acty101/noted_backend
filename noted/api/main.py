@@ -8,6 +8,7 @@ import noted.model
 import logging
 from google.api_core.exceptions import RetryError, ResourceExhausted
 from enum import Enum
+import requests
 
 LOGGER = logging.getLogger(__name__)
 
@@ -28,6 +29,40 @@ def get_api_routes():
             ]
         }
     )
+
+
+@noted.app.route("/api/v1/search/", methods=["POST"])
+def search_databases():
+    token = flask.request.json.get("provider_token")
+
+    url_search = "https://api.notion.com/v1/search"
+    url_db = "https://api.notion.com/v1/databases/"
+
+    payload = {"page_size": 100}
+    headers = {
+        "accept": "application/json",
+        "Notion-Version": "2022-06-28",
+        "content-type": "application/json",
+        "authorization": f"Bearer {token}",
+    }
+
+    response = requests.post(url_search, json=payload, headers=headers)
+    if response.status_code == 200:
+        data = response.json()["results"]
+        result = []
+        for obj in data:
+            db_id = obj["id"]
+            response2 = requests.get(url_db + db_id)
+            if response2.status_code == 200:
+                try:
+                    name = response2.json()["title"]["text"]["content"]
+                except KeyError:
+                    name = ""
+                result.append({"name": name, "id": db_id})
+
+        return flask.jsonify({"data": result})
+    else:
+        return flask.jsonify(make_err_response("Error in request")), 408
 
 
 @noted.app.route("/api/v1/upload/", methods=["POST"])
@@ -65,7 +100,7 @@ def upload_file():
     )
 
 
-@noted.app.route("/api/v1/download/<filename>", methods=["GET"])
+@noted.app.route("/api/v1/download/<filename>/", methods=["GET"])
 def download_file(filename):
     filename = Path(filename)
     suffix = Path(filename).suffix
@@ -77,8 +112,8 @@ def download_file(filename):
     return flask.send_from_directory(filepath, as_attachment=True), 200
 
 
-@noted.app.route("/api/v1/predict/<filename>", methods=["GET"])
-def predict(filename):
+@noted.app.route("/api/v1/predict/<filename>/<pathid>", methods=["GET"])
+def predict(filename, pathid):
     filename = Path(filename)
     suffix = filename.suffix
     style = flask.request.args.get("style", Style.CONCISE, type=int)
