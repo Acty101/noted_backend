@@ -33,7 +33,7 @@ def get_api_routes():
 
 @noted.app.route("/api/v1/search/", methods=["POST"])
 def search_databases():
-    token = flask.request.json.get("provider_token")
+    token = flask.request.args.get("provider_token", "")
 
     url_search = "https://api.notion.com/v1/search"
     url_db = "https://api.notion.com/v1/databases/"
