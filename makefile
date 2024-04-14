@@ -1,6 +1,6 @@
 SHELL := /bin/bash
 
-run-debug:
+debug:
 	flask --app noted  --debug run --host 0.0.0.0 --port 8080
 
 run:
