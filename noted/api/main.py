@@ -87,7 +87,7 @@ def predict(filename):
         except (RetryError, ResourceExhausted) as e:
             return flask.jsonify(make_err_response("Error with Gemini")), 408
         LOGGER.info("Prediction done!")
-        return flask.jsonify({"response": model_response})
+        return flask.jsonify({"children": model_response})
     return flask.jsonify({"hello": "world"})
     # else:
     #     predict_video(noted.app.config["VIDEO_FOLDER"] / filename)

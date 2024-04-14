@@ -26,6 +26,7 @@ app.config["UPLOAD_FOLDER"] = uploads
 app.config["VIDEO_FOLDER"] = app.config["UPLOAD_FOLDER"] / Path("video")
 app.config["AUDIO_FOLDER"] = app.config["UPLOAD_FOLDER"] / Path("audio")
 
+
 # get prompt
 with open(ROOT / Path("model", "prompt.txt"), "r") as prompt:
     app.config["AUDIO_PROMPT"] = prompt.read()
