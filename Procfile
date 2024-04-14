@@ -1,1 +1,1 @@
-web: gunicorn app:noted
+web: gunicorn noted:app
