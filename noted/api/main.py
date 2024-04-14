@@ -50,17 +50,18 @@ def search_databases():
     if response.status_code == 200:
         data = response.json()["results"]
         result = []
+        headers.pop("accept")
         for obj in data:
             db_id = obj["id"]
-            response2 = requests.get(url_db + db_id)
+            response2 = requests.get(url_db + db_id, headers=headers)
+            name = ""
             if response2.status_code == 200:
                 try:
                     name = response2.json()["title"][0]["text"]["content"]
-                except KeyError:
-                    name = ""
-                result.append({"name": name, "id": db_id})
-
-        return flask.jsonify({"data": data})
+                except (KeyError, IndexError):
+                    pass
+            result.append({"name": name, "id": db_id})
+        return flask.jsonify({"data": result})
     else:
         return flask.jsonify(make_err_response("Error in request")), 408
 
