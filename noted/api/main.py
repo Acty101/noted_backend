@@ -112,11 +112,28 @@ def download_file(filename):
     return flask.send_from_directory(filepath, as_attachment=True), 200
 
 
-@noted.app.route("/api/v1/predict/<filename>/<pathid>", methods=["GET"])
-def predict(filename, pathid):
+@noted.app.route("/api/v1/predict/<filename>/<db_id>", methods=["GET"])
+def predict(filename, db_id):
     filename = Path(filename)
     suffix = filename.suffix
     style = flask.request.args.get("style", Style.CONCISE, type=int)
+    token = flask.request.args.get("provider_token", "")
+
+    url = "https://api.notion.com/v1/pages"
+
+    payload = {
+        "parent": {"databasse_id": db_id},
+        "properties": {
+            "Name": {"title": [{"text": {"content": "Get Noted!"}}]}
+        },
+    }
+    headers = {
+        "accept": "application/json",
+        "Notion-Version": "2022-06-28",
+        "content-type": "application/json",
+        "authorization": f"Bearer {token}",
+    }
+
     if suffix == ".mp3":
         LOGGER.info("Starting prediction...")
         try:
@@ -130,10 +147,18 @@ def predict(filename, pathid):
                 prompt,
                 noted.app.config["MODEL"],
             )
+            payload["children"] = model_response
+            response = requests.post(url, json=payload, headers=headers)
+            if response.status_code == 200:
+                url = response.json()["url"]
+                return flask.jsonify({"url": url})
+            return (
+                flask.jsonify(make_err_response("Error with Notion")),
+                408,
+            )
         except (RetryError, ResourceExhausted) as e:
             return flask.jsonify(make_err_response("Error with Gemini")), 408
-        LOGGER.info("Prediction done!")
-        return flask.jsonify({"children": model_response})
+
     return flask.jsonify({"hello": "world"})
     # else:
     #     predict_video(noted.app.config["VIDEO_FOLDER"] / filename)
