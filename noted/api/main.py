@@ -14,6 +14,11 @@ LOGGER = logging.getLogger(__name__)
 
 @noted.app.route("/", methods=["GET"])
 def get_routes():
+    return flask.redirect("/api/v1/")
+
+
+@noted.app.route("/api/v1/", methods=["GET"])
+def get_routes():
     return flask.jsonify(
         {
             "routes": [
