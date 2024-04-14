@@ -28,8 +28,11 @@ app.config["AUDIO_FOLDER"] = app.config["UPLOAD_FOLDER"] / Path("audio")
 
 
 # get prompt
-with open(ROOT / Path("model", "prompt.txt"), "r") as prompt:
-    app.config["AUDIO_PROMPT"] = prompt.read()
+with open(ROOT / Path("model", "concise_prompt.txt"), "r") as prompt:
+    app.config["AUDIO_PROMPT_CONCISE"] = prompt.read()
+
+with open(ROOT / Path("model", "elaborate_prompt.txt"), "r") as prompt:
+    app.config["AUDIO_PROMPT_ELABORATE"] = prompt.read()
 
 # get model
 from noted.model import MODEL

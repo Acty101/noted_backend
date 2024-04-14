@@ -7,6 +7,7 @@ import re
 import noted.model
 import logging
 from google.api_core.exceptions import RetryError, ResourceExhausted
+from enum import Enum
 
 LOGGER = logging.getLogger(__name__)
 
@@ -75,13 +76,18 @@ def download_file(filename):
 def predict(filename):
     filename = Path(filename)
     suffix = filename.suffix
-    LOGGER.info("Request received..")
+    style = flask.request.args.get("style", Style.CONCISE, type=int)
     if suffix == ".mp3":
         LOGGER.info("Starting prediction...")
         try:
+            prompt = (
+                noted.app.config["AUDIO_PROMPT_CONCISE"]
+                if style == Style.CONCISE.value
+                else noted.app.config["AUDIO_PROMPT_ELABORATE"]
+            )
             model_response = noted.model.predict_audio(
                 noted.app.config["AUDIO_FOLDER"] / filename,
-                noted.app.config["AUDIO_PROMPT"],
+                prompt,
                 noted.app.config["MODEL"],
             )
         except (RetryError, ResourceExhausted) as e:
@@ -95,3 +101,8 @@ def predict(filename):
 
 def make_err_response(err):
     return {"error": err}
+
+
+class Style(Enum):
+    CONCISE = 0
+    ELABORATE = 1
