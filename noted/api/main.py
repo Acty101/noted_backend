@@ -39,7 +39,7 @@ def search_databases():
     url_db = "https://api.notion.com/v1/databases/"
 
     payload = {"filter": {"value": "database", "property": "object"}}
-    headers = {
+    headers = { 
         "accept": "application/json",
         "Notion-Version": "2022-06-28",
         "content-type": "application/json",
@@ -149,9 +149,7 @@ def predict(filename, db_id):
                 noted.app.config["MODEL"],
             )
             payload["children"] = model_response
-            print
             response = requests.post(url, json=payload, headers=headers)
-            print(response)
             if response.status_code == 200:
                 url = response.json()["url"]
                 return flask.jsonify({"url": url})
@@ -161,6 +159,8 @@ def predict(filename, db_id):
             )
         except (RetryError, ResourceExhausted) as e:
             return flask.jsonify(make_err_response("Error with Gemini")), 408
+        except FileNotFoundError as e:
+            return flask.jsonify(make_err_response("File not found")), 404
 
     return flask.jsonify({"hello": "world"})
     # else:
