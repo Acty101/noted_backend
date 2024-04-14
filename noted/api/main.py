@@ -18,7 +18,7 @@ def get_routes():
 
 
 @noted.app.route("/api/v1/", methods=["GET"])
-def get_routes():
+def get_api_routes():
     return flask.jsonify(
         {
             "routes": [
