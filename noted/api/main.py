@@ -38,7 +38,7 @@ def search_databases():
     url_search = "https://api.notion.com/v1/search"
     url_db = "https://api.notion.com/v1/databases/"
 
-    payload = {"page_size": 100}
+    payload = {"filter": {"value": "database", "property": "object"}}
     headers = {
         "accept": "application/json",
         "Notion-Version": "2022-06-28",
@@ -55,12 +55,12 @@ def search_databases():
             response2 = requests.get(url_db + db_id)
             if response2.status_code == 200:
                 try:
-                    name = response2.json()["title"]["text"]["content"]
+                    name = response2.json()["title"][0]["text"]["content"]
                 except KeyError:
                     name = ""
                 result.append({"name": name, "id": db_id})
 
-        return flask.jsonify({"data": result})
+        return flask.jsonify({"data": data})
     else:
         return flask.jsonify(make_err_response("Error in request")), 408
 
