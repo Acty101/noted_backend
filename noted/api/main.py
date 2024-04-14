@@ -117,7 +117,7 @@ def download_file(filename):
 def predict(filename, db_id):
     filename = Path(filename)
     suffix = filename.suffix
-    style = flask.request.args.get("style", Style.CONCISE, type=int)
+    style = flask.request.args.get("style", Style.CONCISE.value, type=int)
     token = flask.request.args.get("provider_token", "")
 
     url = "https://api.notion.com/v1/pages"
