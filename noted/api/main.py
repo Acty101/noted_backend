@@ -123,7 +123,7 @@ def predict(filename, db_id):
     url = "https://api.notion.com/v1/pages"
 
     payload = {
-        "parent": {"databasse_id": db_id},
+        "parent": {"database_id": db_id},
         "properties": {
             "Name": {"title": [{"text": {"content": "Get Noted!"}}]}
         },
@@ -149,7 +149,9 @@ def predict(filename, db_id):
                 noted.app.config["MODEL"],
             )
             payload["children"] = model_response
+            print
             response = requests.post(url, json=payload, headers=headers)
+            print(response)
             if response.status_code == 200:
                 url = response.json()["url"]
                 return flask.jsonify({"url": url})
